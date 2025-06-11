@@ -14,7 +14,9 @@ const GAME_CONFIG = {
   BALL_INITIAL_POWER: 1,
   BALL_INITIAL_HP: 1,
   SPEED_INCREASE_FACTOR: 1.2,
-  CORNER_ESCAPE_ANGLE: Math.PI / 4
+  CORNER_ESCAPE_ANGLE: Math.PI / 4,
+  MIN_BRICK_WIDTH: 50,
+  MAX_BRICK_WIDTH: 100
 };
 
 // DOM Elements
@@ -91,19 +93,51 @@ class Ball {
   }
 }
 
-// Initialize bricks
+// Calculate brick dimensions based on canvas size
+function calculateBrickDimensions() {
+  const canvasWidth = DOM.canvas.width;
+  const availableWidth = canvasWidth - (GAME_CONFIG.BRICK_PADDING * 2);
+  
+  // Calculate optimal brick width
+  let brickWidth = Math.floor(availableWidth / GAME_CONFIG.BRICK_ROWS);
+  
+  // Ensure brick width is within reasonable limits
+  brickWidth = Math.max(
+    GAME_CONFIG.MIN_BRICK_WIDTH,
+    Math.min(brickWidth, GAME_CONFIG.MAX_BRICK_WIDTH)
+  );
+  
+  // Calculate actual number of bricks that can fit
+  const actualBrickCount = Math.floor(availableWidth / brickWidth);
+  
+  // Calculate offset to center the bricks
+  const totalBricksWidth = (brickWidth * actualBrickCount) + 
+                          (GAME_CONFIG.BRICK_PADDING * (actualBrickCount - 1));
+  const offsetX = (canvasWidth - totalBricksWidth) / 2;
+  
+  return {
+    width: brickWidth,
+    height: Math.floor(brickWidth * 0.3), // Maintain aspect ratio
+    count: actualBrickCount,
+    offsetX: offsetX
+  };
+}
+
+// Initialize bricks with dynamic dimensions
 function initializeBricks() {
+  const dimensions = calculateBrickDimensions();
+  
   const brickInfo = {
-    w: GAME_CONFIG.BRICK_WIDTH,
-    h: GAME_CONFIG.BRICK_HEIGHT,
+    w: dimensions.width,
+    h: dimensions.height,
     padding: GAME_CONFIG.BRICK_PADDING,
-    offsetX: GAME_CONFIG.BRICK_OFFSET_X,
+    offsetX: dimensions.offsetX,
     offsetY: GAME_CONFIG.BRICK_OFFSET_Y,
     visible: true,
     hp: gameState.startHP
   };
 
-  gameState.bricks = Array.from({ length: GAME_CONFIG.BRICK_ROWS }, (_, i) =>
+  gameState.bricks = Array.from({ length: dimensions.count }, (_, i) =>
     Array.from({ length: GAME_CONFIG.BRICK_COLUMNS }, (_, j) => ({
       x: i * (brickInfo.w + brickInfo.padding) + brickInfo.offsetX,
       y: j * (brickInfo.h + brickInfo.padding) + brickInfo.offsetY,
@@ -112,10 +146,39 @@ function initializeBricks() {
   );
 }
 
-// Initialize game
-function initializeGame() {
+// Handle window resize
+function handleResize() {
+  // Update canvas size
+  const containerWidth = Math.min(800, window.innerWidth * 0.95);
+  DOM.canvas.width = containerWidth;
+  DOM.canvas.height = containerWidth * GAME_CONFIG.CANVAS_HEIGHT_RATIO;
+  
+  // Reinitialize bricks with new dimensions
   initializeBricks();
+  
+  // Update ball positions if needed
+  if (gameState.balls.length > 0) {
+    const centerX = DOM.canvas.width / 2;
+    const centerY = DOM.canvas.height / 2;
+    gameState.balls.forEach(ball => {
+      ball.x = centerX;
+      ball.y = centerY;
+    });
+  }
+}
+
+// Add resize event listener
+window.addEventListener('resize', handleResize);
+
+// Update initialization
+function initializeGame() {
+  // Set initial canvas size
+  handleResize();
+  
+  // Create initial balls
   createInitialBalls();
+  
+  // Start game loop
   update();
 }
 
@@ -297,9 +360,9 @@ function handleBrickCollisions(ball, oldX, oldY) {
 
 function checkBrickCollision(ball, brick) {
   return ball.x + ball.size > brick.x &&
-         ball.x - ball.size < brick.x + GAME_CONFIG.BRICK_WIDTH &&
+         ball.x - ball.size < brick.x + brick.w &&
          ball.y + ball.size > brick.y &&
-         ball.y - ball.size < brick.y + GAME_CONFIG.BRICK_HEIGHT;
+         ball.y - ball.size < brick.y + brick.h;
 }
 
 function handleBrickCollision(ball, brick, oldX, oldY) {
@@ -431,4 +494,18 @@ function drawScore() {
   DOM.score.textContent = gameState.score;
   DOM.currentLevel.textContent = gameState.currentLevel;
 }
+
+// Tab functionality
+const tabBtns = document.querySelectorAll('.tab-btn');
+const tabContents = document.querySelectorAll('.tab-content');
+
+tabBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    tabBtns.forEach(b => b.classList.remove('active'));
+    tabContents.forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    const tabId = btn.getAttribute('data-tab');
+    document.getElementById(`${tabId}-tab`).classList.add('active');
+  });
+});
 

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,42 +7,42 @@
     <title>Breakout Game</title>
   </head>
   <body>
-    <div class="game-container">
-      <div class="score-container">
-        <h2>Score: <span id="score">0</span></h2>
-        <h3>Level: <span id="current-level">1</span></h3>
-      </div>
-      <canvas id="canvas"></canvas>
-    </div>
-
-    <div id="game-controls" class="modal">
-      <div class="modal-content">
-        <h2>Game Controls</h2>
-        <div class="controls-grid">
-          <div class="control-group">
-            <h3>Balls</h3>
-            <button id="addball-btn" class="btn">Add Ball</button>
-            <p>Current: <span id="balls-count">1</span></p>
-          </div>
-          
-          <div class="control-group">
-            <h3>Ball Speed</h3>
-            <button id="inc-speed-ball-btn" class="btn">Increase Speed</button>
-            <p>Current: <span id="speed-ball">1</span></p>
-          </div>
-          
-          <div class="control-group">
-            <h3>Ball Power</h3>
-            <button id="inc-power-ball-btn" class="btn">Increase Power</button>
-            <p>Current: <span id="power-ball">1</span></p>
+    <div class="tabs-container">
+      <div class="tabs-content">
+        <div id="game-tab" class="tab-content active">
+          <div class="game-container">
+            <div class="score-container">
+              <h2>Score: <span id="score">0</span></h2>
+              <h3>Level: <span id="current-level">1</span></h3>
+            </div>
+            <canvas id="canvas"></canvas>
           </div>
         </div>
-        <button id="close-controls-btn" class="btn">Close</button>
-      </div>
-    </div>
 
-    <div class="menu-buttons">
-      <button id="controls-btn" class="btn">Game Controls</button>
+        <div id="upgrades-tab" class="tab-content">
+          <div class="tab-inner">
+            <h2>Game Upgrades</h2>
+            <div class="control-group">
+              <h3>Balls: <span id="balls-count">1</span></h3>
+              <button id="addball-btn" class="btn">Add Ball</button>
+            </div>
+            
+            <div class="control-group">
+              <h3>Ball Speed: <span id="speed-ball">1</span></h3>
+              <button id="inc-speed-ball-btn" class="btn">Increase Speed</button>
+            </div>
+            
+            <div class="control-group">
+              <h3>Ball Power: <span id="power-ball">1</span></h3>
+              <button id="inc-power-ball-btn" class="btn">Increase Power</button>
+          </div>
+        </div>
+
+      </div>
+      <div class="tabs-header">
+        <button class="tab-btn active" data-tab="game">Game</button>
+        <button class="tab-btn" data-tab="upgrades">Upgrades</button>
+      </div>
     </div>
 
     <script src="script.js"></script>
