@@ -2,43 +2,62 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="style.css" />
     <title>Breakout Game</title>
   </head>
   <body>
     <div class="tabs-container">
       <div class="tabs-content">
+        <div class="score-container">
+          <h2>Score: <span id="score">0</span></h2>
+          <h3>Level: <span id="current-level">1</span></h3>
+        </div>
         <div id="game-tab" class="tab-content active">
           <div class="game-container">
-            <div class="score-container">
-              <h2>Score: <span id="score">0</span></h2>
-              <h3>Level: <span id="current-level">1</span></h3>
-            </div>
             <canvas id="canvas"></canvas>
           </div>
         </div>
 
         <div id="upgrades-tab" class="tab-content">
           <div class="tab-inner">
-            <h2>Game Upgrades</h2>
             <div class="control-group">
-              <h3>Balls: <span id="balls-count">1</span></h3>
-              <button id="addball-btn" class="btn">Add Ball</button>
+              <h3>Balls count</h3>
+              <div class="ball-group">
+                <span class="normal-ball">
+                  <svg width="10" height="10" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><circle cx="5" cy="5" r="5" fill="black"/></svg>
+                </span>
+                <span id="normal-balls-count">1</span>
+                <button id="add-normal-ball-btn" class="btn">+</button>
+              </div>
+              <div class="ball-group">
+                <span class="smart-ball">
+                  <svg width="10" height="10" viewBox="0 0 10 10" xmlns="http://www.w3.org/2000/svg"><circle cx="5" cy="5" r="5" fill="pink"/></svg>
+                </span>
+                <span id="smart-balls-count">0</span>
+                <button id="add-smart-ball-btn" class="btn">+</button>
+              </div>
             </div>
             
             <div class="control-group">
-              <h3>Ball Speed: <span id="speed-ball">1</span></h3>
+              <h3>Ball Speed</h3>
+              <span id="speed-ball">1</span>
               <button id="inc-speed-ball-btn" class="btn">Increase Speed</button>
             </div>
             
             <div class="control-group">
               <h3>Ball Power: <span id="power-ball">1</span></h3>
               <button id="inc-power-ball-btn" class="btn">Increase Power</button>
+            </div>
+            
+            <div class="control-group">
+              <h3>Click Damage: <span id="click-damage">1</span></h3>
+              <button id="inc-click-damage-btn" class="btn">Increase Click Damage</button>
+            </div>
           </div>
         </div>
-
       </div>
+      
       <div class="tabs-header">
         <button class="tab-btn active" data-tab="game">Game</button>
         <button class="tab-btn" data-tab="upgrades">Upgrades</button>
